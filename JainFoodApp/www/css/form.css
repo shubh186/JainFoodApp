@@ -1,0 +1,38 @@
+﻿.form-container{
+    padding: 15px;
+}
+input {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    height: 35px;
+    width: 100%;
+    padding-left: 5px;
+}
+input:focus {
+    border: 1px solid #cc6c08;
+}
+textarea {
+    width: 100%;
+    border: 1px solid #cccccc;
+    min-height: 150px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    padding-left: 5px;
+}
+
+textarea:focus {
+    border: 1px solid #cc6c08;
+}
+
+.input-container{
+    padding: 15px;
+}
+
+.label{
+    padding-bottom: 5px;
+}
