@@ -1,5 +1,6 @@
-﻿.form-container{
+﻿.form-container {
     padding: 15px;
+    border: 25px solid #f3ac62;
 }
 input {
     margin-top: 0px;
@@ -35,4 +36,15 @@ textarea:focus {
 
 .label{
     padding-bottom: 5px;
+}
+
+.submit-btn {
+    background: none;
+    border: 1px solid #cc6c08;
+    padding: 16px 25px;
+    border-radius: 6px;
+}
+
+.btn-container{
+    text-align: center;
 }

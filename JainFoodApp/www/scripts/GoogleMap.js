@@ -1,5 +1,7 @@
-﻿function initMap() {
-    var map = new google.maps.Map(
+﻿"use strict"
+var map, currentPositionMarker;
+function initMap() {
+    map = new google.maps.Map(
         document.getElementById('map'),
         {
             center: { lat: 41.84, lng: -39.08 },
@@ -76,24 +78,6 @@
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     var infowindow = new google.maps.InfoWindow;
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            map.setCenter(pos);
-            map.setZoom(11);
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        console.log("no support");
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-    }
 
     var infowindowContent = document.getElementById('infowindow-content');
     infowindow.setContent(infowindowContent);
@@ -114,24 +98,94 @@
         }
         geocoder.geocode({ 'placeId': place.place_id }, function (results, status) {
             if (status !== 'OK') {
-                window.alert('Geocoder failed due to: ' + status);
                 return;
             }
 
-            map.setZoom(18);
-            map.setCenter(results[0].geometry.location);
+            for (var i = 0; i < results[0].types.length; i++) {
+                if (results[0].types[i] == "establishment" ||
+                    results[0].types[i] == "food" ||
+                    results[0].types[i] == "point_of_interest" ||
+                    results[0].types[i] == "restaurant" ||
+                    results[0].types[i] == "bakery" ||
+                    results[0].types[i] == "cafe") {
 
-            // Set the position of the marker using the place ID and location.
-            marker.setPlace(
-                { placeId: place.place_id, location: results[0].geometry.location });
+                    map.setZoom(18);
+                    map.setCenter(results[0].geometry.location);
 
-            marker.setVisible(true);
+                    // Set the position of the marker using the place ID and location.
+                    marker.setPlace(
+                        { placeId: place.place_id, location: results[0].geometry.location });
 
-            infowindowContent.children['place-name'].textContent = place.name;
-            infowindowContent.children['place-address'].textContent =
-                results[0].formatted_address;
+                    marker.setVisible(true);
 
-            infowindow.open(map, marker);
+                    infowindowContent.children['place-name'].textContent = place.name;
+                    infowindowContent.children['place-address'].textContent =
+                        results[0].formatted_address;
+
+                    infowindow.open(map, marker);
+                } else {
+                    map.setZoom(13);
+                    map.setCenter(results[0].geometry.location);
+                }
+
+            
+            };
+           
+            
         });
     });
+}
+function locError(error) {
+    // the current position could not be located
+    alert("The current position could not be found!");
+}
+
+function setCurrentPosition(pos) {
+    currentPositionMarker = new google.maps.Marker({
+        map: map,
+        position: new google.maps.LatLng(
+            pos.coords.latitude,
+            pos.coords.longitude
+        ),
+        title: "Current Position"
+    });
+    map.setCenter(new google.maps.LatLng(
+        pos.coords.latitude,
+        pos.coords.longitude
+    ));
+    map.setZoom(13);
+}
+
+function displayAndWatch(position) {
+    // set current position
+    setCurrentPosition(position);
+    // watch position
+    watchCurrentPosition();
+}
+
+function watchCurrentPosition() {
+    var positionTimer = navigator.geolocation.watchPosition(
+        function (position) {
+            setMarkerPosition(
+                currentPositionMarker,
+                position
+            );
+        });
+}
+
+function setMarkerPosition(marker, position) {
+    marker.setPosition(
+        new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude)
+    );
+}
+
+function initLocationProcedure() {
+    initMap();
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
+    } else {
+        console.log("Not supported");
+    }
 }
