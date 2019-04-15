@@ -7,7 +7,7 @@ This app is for users to find Jain restaurants
 
 ### Cloning the project
 
-Go the project page and copy the HTTPS URL. Then run the following command:
+Go the project page, find the clone button and copy the HTTPS URL. Then run the following command:
 
 ```
 git clone HTTPS-URL
