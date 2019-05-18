@@ -11,10 +11,10 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/GoogleMap.css">
     <link rel="stylesheet" type="text/css" href="css/onsenui.css">
     <link rel="stylesheet" type="text/css" href="css/onsen-css-components.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="scripts/onsenui.min.js"></script>
     <title>Jain Food App</title>
 </head>
@@ -27,7 +27,7 @@
         <ons-tabbar swipeable position="bottom">
             <ons-tab page="map.html" label="Map" icon="ion-ios-location, material:md-home" active>
             </ons-tab>
-            <ons-tab page="addRestaurant.html" label="By Cuisine" icon="ion-fork" active-icon="ion-fork">
+            <ons-tab onclick="showPopover(this)" label="By Cuisine" icon="ion-fork" active-icon="ion-fork">
             </ons-tab>
             <ons-tab page="listView.html" label="List View" icon="ion-ios-list-outline" active-icon="ion-ios-list-outline">
             </ons-tab>
@@ -35,7 +35,13 @@
             </ons-tab>
         </ons-tabbar>
     </ons-page>
-
+    <ons-popover direction="up" id="popover">
+        <div style="padding: 10px; text-align: center;">
+            <p>
+                This is a popover
+            </p>
+        </div>
+    </ons-popover>
     <template id="map.html">
         <ons-page id="Map">
             <div style="display: none">
@@ -54,8 +60,40 @@
             </div>
         </ons-page>
     </template>
+    <script>
+        var showPopover = function (target) {
+            var popup = document.getElementById('popover')
+            if (popup.style.display == 'block') {
+                popup.hide();
+            } else {
+                popup.show(target);
+            }
+        };
+    </script>
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.csv.min.js"></script>
+    <script>
+
+        let csvObjects;
+        $.ajax({
+            type: "GET",
+            url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
+            dataType: "text",
+            success: function (data) {
+                dataToJson(data);
+            },
+            error: function () {
+                dataToJson({});
+            }
+        });
+
+        function dataToJson(data) {
+            csvObjects = $.csv.toObjects(data)
+            console.log(csvObjects)
+        }
 
 
+    </script>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="scripts/platformOverrides.js"></script>
     <script type="text/javascript" src="scripts/index.js"></script>

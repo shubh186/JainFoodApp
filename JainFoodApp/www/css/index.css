@@ -4,3 +4,11 @@ body {
     color: #696a6c;
     margin: 0;
 }
+
+.popover-mask{
+    z-index: 0;
+}
+
+.popover{
+    margin-bottom: 5px;
+}
