@@ -103,6 +103,7 @@
     <splash src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" height="1920" />
   </platform>
   <access origin="https://maps.googleapis.com" />
+  <access origin="https://docs.google.com" />
   <plugin name="cordova-plugin-geolocation" spec="~2.4.3" />
   <access origin="https://maps.gstatic.com" />
 </widget>

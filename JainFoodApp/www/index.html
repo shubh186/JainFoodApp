@@ -24,7 +24,7 @@
             <div class="center">Jain Food App</div>
         </ons-toolbar>
 
-        <ons-tabbar swipeable position="bottom">
+        <ons-tabbar position="bottom">
             <ons-tab page="map.html" label="Map" icon="ion-ios-location, material:md-home" active>
             </ons-tab>
             <ons-tab onclick="showPopover(this)" label="By Cuisine" icon="ion-fork" active-icon="ion-fork">
@@ -72,28 +72,6 @@
     </script>
     <script type="text/javascript" src="scripts/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.csv.min.js"></script>
-    <script>
-
-        let csvObjects;
-        $.ajax({
-            type: "GET",
-            url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
-            dataType: "text",
-            success: function (data) {
-                dataToJson(data);
-            },
-            error: function () {
-                dataToJson({});
-            }
-        });
-
-        function dataToJson(data) {
-            csvObjects = $.csv.toObjects(data)
-            console.log(csvObjects)
-        }
-
-
-    </script>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="scripts/platformOverrides.js"></script>
     <script type="text/javascript" src="scripts/index.js"></script>

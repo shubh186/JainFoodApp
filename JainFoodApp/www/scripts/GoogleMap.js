@@ -1,6 +1,7 @@
 ﻿"use strict"
 var map, currentPositionMarker;
 function initMap() {
+    getSpreadsheetData();
     map = new google.maps.Map(
         document.getElementById('map'),
         {
@@ -168,24 +169,88 @@ function watchCurrentPosition() {
         function (position) {
             setMarkerPosition(
                 currentPositionMarker,
-                position
+                position.coords.latitude,
+                position.coords.longitude
             );
         });
 }
 
-function setMarkerPosition(marker, position) {
+function setMarkerPosition(marker, latitude, longitude) {
     marker.setPosition(
         new google.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude)
+            latitude,
+            longitude)
     );
 }
+
+function getSpreadsheetData() {
+    let csvObjects;
+    $.ajax({
+        type: "GET",
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
+        dataType: "text",
+        success: function (data) {
+            populateAllMarkers(data);
+        },
+        error: function () {
+            populateAllMarkers({});
+        }
+    });
+
+    function populateAllMarkers(data) {
+        csvObjects = $.csv.toObjects(data);
+        console.log(csvObjects);
+
+        var infowindow = new google.maps.InfoWindow();
+
+        for (var i = 0; i < csvObjects.length; i++) {
+
+            var marker = new google.maps.Marker({
+                map: map,
+                position: new google.maps.LatLng(
+                    csvObjects[i].Latitude,
+                    csvObjects[i].Longitude
+                ),
+                title: "Current Position"
+            });
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                return function () {
+                    infowindow.setContent(
+                        '<div id="content">' +
+                        '<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
+                        '<p>Cuisine Type: ' + csvObjects[i]["Cuisine"] + '</p>' +
+                        '<p>Hours of Operation: ' + csvObjects[i]["Hours of Operation"] + '</p>' +
+                        '<p>Rating: ' + csvObjects[i]["Google Rating"] + '</p>' +
+                        '<p>Fully Vegetarian?: ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
+                        '<p>Phone Number: ' + csvObjects[i]["Phone Number"] + '</p>' +
+                        '<p>Price: ' + csvObjects[i]["Price"] + '</p>' +
+                        '</div>'
+                    );
+                    infowindow.open(map, marker);
+                }
+            })(marker, i)); 
+        }
+    }
+}
+
+
 
 function initLocationProcedure() {
     initMap();
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            map.setCenter(pos);
+            map.setZoom(11);
+        });
     } else {
-        console.log("Not supported");
+        // Browser doesn't support Geolocation
+        alert("no support");
     }
+
 }
