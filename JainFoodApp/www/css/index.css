@@ -5,10 +5,74 @@ body {
     margin: 0;
 }
 
-.popover-mask{
-    z-index: 0;
+.toolbar {
+    background: #d35908;
 }
 
-.popover{
-    margin-bottom: 5px;
+:checked + .tabbar--material__button {
+    background-color: #ffe1cc;
+    color: #d35908;
 }
+.tabbar--material__button {
+    color: #ffffff;
+}
+.bottom-bar, .tabbar:not(.tabbar--top) {
+    background: #d35908;
+}
+
+.tabbar__icon{
+    height: 32px;
+}
+
+.center {
+    text-align: center;
+    color: #ffffff;
+    font-size: 24px;
+}
+.text-right{
+    text-align: right;
+}
+.page--material__content h1{
+    font-size: 18px;
+    margin: 0;
+}
+.green-color {
+    color: #009000;
+}
+.restaurant-list {
+    padding: 20px 0;
+    border-bottom: 1px solid #009000;
+}
+.restaurant-list p{
+    margin-bottom: 0;
+}
+.page--material, .page--material__background{
+    background: #ffffff;
+}
+.more-details {
+    padding: 30px 0px 20px 0;
+    text-align: left;
+}
+#content .more-details{
+    padding-top: 20px;
+}
+.more-details a {
+    padding: 10px 20px;
+    border: 1px solid #d35908;
+    border-radius: 6px;
+    background: #ffe5bc;
+}
+.accordion {
+    display: none;
+    background: #eff9ef;
+    padding: 5px 15px 20px 15px;
+}
+.accordion p{
+    line-height: 1.5;
+}
+.tabbar__icon + .tabbar__label{
+    font-size: 12px;
+}
+/*.popover-mask{
+    z-index: 0;
+}*/

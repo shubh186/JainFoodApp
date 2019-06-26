@@ -11,17 +11,18 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <link rel="stylesheet" type="text/css" href="css/GoogleMap.css">
     <link rel="stylesheet" type="text/css" href="css/onsenui.css">
     <link rel="stylesheet" type="text/css" href="css/onsen-css-components.min.css">
+    <link rel="stylesheet" type="text/css" href="css/GoogleMap.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <script type="text/javascript" src="scripts/onsenui.min.js"></script>
     <title>Jain Food App</title>
 </head>
 <body>
     <ons-page>
         <ons-toolbar>
-            <div class="center">Jain Food App</div>
+            <div class="center">Jain Bites</div>
         </ons-toolbar>
 
         <ons-tabbar position="bottom">
@@ -35,12 +36,8 @@
             </ons-tab>
         </ons-tabbar>
     </ons-page>
-    <ons-popover direction="up" id="popover">
-        <div style="padding: 10px; text-align: center;">
-            <p>
-                This is a popover
-            </p>
-        </div>
+    <ons-popover direction="up" id="popover" cancelable>
+        <div id="popoverItems"></div>
     </ons-popover>
     <template id="map.html">
         <ons-page id="Map">
@@ -78,5 +75,14 @@
     <script type="text/javascript" src="scripts/GoogleMap.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB3lEBZaaMOi_NVCn4PhcB2KNC-owMxYY&libraries=places&callback=initLocationProcedure"
             async defer></script>
+    <script>
+        $(document).on('click', '.accordion-btn', function () {
+            var currentId = $(this).attr('id');
+            console.log(currentId);
+
+                $("#" + currentId + ".accordion").slideToggle(500);
+
+        });
+    </script>
 </body>
 </html>

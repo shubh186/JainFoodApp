@@ -1,5 +1,8 @@
 ﻿"use strict"
-var map, currentPositionMarker;
+let map, currentPositionMarker, csvObjects;
+let allMarkers = [];
+let selectedCategores = [];
+
 function initMap() {
     getSpreadsheetData();
     map = new google.maps.Map(
@@ -65,76 +68,8 @@ function initMap() {
                     stylers: [{ color: '#9ca5b3' }]
                 },
             ]
-        });
-
-    var input = document.getElementById('pac-input');
-
-    var autocomplete = new google.maps.places.Autocomplete(input);
-
-    autocomplete.bindTo('bounds', map);
-
-    // Specify just the place data fields that you need.
-    autocomplete.setFields(['place_id', 'geometry', 'name', 'formatted_address']);
-
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-    var infowindow = new google.maps.InfoWindow;
-
-    var infowindowContent = document.getElementById('infowindow-content');
-    infowindow.setContent(infowindowContent);
-
-    var geocoder = new google.maps.Geocoder;
-
-    var marker = new google.maps.Marker({ map: map });
-    marker.addListener('click', function () {
-        infowindow.open(map, marker);
-    });
-
-    autocomplete.addListener('place_changed', function () {
-        infowindow.close();
-        var place = autocomplete.getPlace();
-
-        if (!place.place_id) {
-            return;
         }
-        geocoder.geocode({ 'placeId': place.place_id }, function (results, status) {
-            if (status !== 'OK') {
-                return;
-            }
-
-            for (var i = 0; i < results[0].types.length; i++) {
-                if (results[0].types[i] == "establishment" ||
-                    results[0].types[i] == "food" ||
-                    results[0].types[i] == "point_of_interest" ||
-                    results[0].types[i] == "restaurant" ||
-                    results[0].types[i] == "bakery" ||
-                    results[0].types[i] == "cafe") {
-
-                    map.setZoom(18);
-                    map.setCenter(results[0].geometry.location);
-
-                    // Set the position of the marker using the place ID and location.
-                    marker.setPlace(
-                        { placeId: place.place_id, location: results[0].geometry.location });
-
-                    marker.setVisible(true);
-
-                    infowindowContent.children['place-name'].textContent = place.name;
-                    infowindowContent.children['place-address'].textContent =
-                        results[0].formatted_address;
-
-                    infowindow.open(map, marker);
-                } else {
-                    map.setZoom(13);
-                    map.setCenter(results[0].geometry.location);
-                }
-
-            
-            };
-           
-            
-        });
-    });
+    );
 }
 function locError(error) {
     // the current position could not be located
@@ -148,7 +83,8 @@ function setCurrentPosition(pos) {
             pos.coords.latitude,
             pos.coords.longitude
         ),
-        title: "Current Position"
+        title: "Current Position",
+        icon: 'images/user-icon.png'
     });
     map.setCenter(new google.maps.LatLng(
         pos.coords.latitude,
@@ -183,8 +119,80 @@ function setMarkerPosition(marker, latitude, longitude) {
     );
 }
 
+function getCuisines(restaurantsArray) {
+    var cuisineTypes = [];
+    for (var i = 0; i < restaurantsArray.length; i++) {
+        if (restaurantsArray[i].Cuisine !== 'Other') {
+            cuisineTypes.push(restaurantsArray[i].Cuisine.trim())
+        }
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    return cuisineTypes.filter(onlyUnique);
+}
+
+function popup(restaurantsArray) {
+    var popupDiv = document.getElementById('popoverItems');
+    var cuisines = getCuisines(restaurantsArray);
+    var popupText = '';
+
+    popupText += '<ons-list>'
+    cuisines.forEach(function (element) {
+        popupText += '<ons-list-item><div class="center">' + element + '</div><div class="right"><ons-switch input-id=' + element.replace(/ /g, '') + '></ons-switch></div></ons-list-item>';
+    });
+    popupText += '</ons-list>';
+
+    popupDiv.innerHTML = popupText;
+
+    $('ons-switch').on('change', function (event) {
+        if (event.target.checked) {
+            showAllMarkers(false);
+            selectedCategores.push(event.target.attributes[0].value);
+            filterByCategory(selectedCategores)
+        } else {
+            showAllMarkers(false);
+            var index = selectedCategores.indexOf(event.target.attributes[0].value);
+
+            if (index > -1) {
+                selectedCategores.splice(index, 1);
+            }
+
+            filterByCategory(selectedCategores)
+        };
+    });
+}
+
+function filterByCategory(categoryArray) {
+    if (categoryArray.length == 0) {
+        showAllMarkers(true);
+    } else {
+        for (var i = 0; i < categoryArray.length; i++) {
+            filterMarkers(categoryArray[i]);
+        }
+    }
+}
+
+function showAllMarkers(visibility) {
+    for (var i = 0; i < allMarkers.length; i++) {
+        var marker = allMarkers[i];
+        marker.setVisible(visibility);
+    }
+}
+
+function filterMarkers(category) {
+    for (var i = 0; i < allMarkers.length; i++) {
+        var marker = allMarkers[i];
+
+        if (marker.category == category || category.length === 0) {
+            marker.setVisible(true);
+        }
+    }
+}
+
 function getSpreadsheetData() {
-    let csvObjects;
     $.ajax({
         type: "GET",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
@@ -193,64 +201,94 @@ function getSpreadsheetData() {
             populateAllMarkers(data);
         },
         error: function () {
+            alert("The app's full features are not available at this moment. Please ensure you are connected to the internet and try again in a few minutes.")
             populateAllMarkers({});
         }
     });
-
-    function populateAllMarkers(data) {
-        csvObjects = $.csv.toObjects(data);
-        console.log(csvObjects);
-
-        var infowindow = new google.maps.InfoWindow();
-
-        for (var i = 0; i < csvObjects.length; i++) {
-
-            var marker = new google.maps.Marker({
-                map: map,
-                position: new google.maps.LatLng(
-                    csvObjects[i].Latitude,
-                    csvObjects[i].Longitude
-                ),
-                title: "Current Position"
-            });
-
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    infowindow.setContent(
-                        '<div id="content">' +
-                        '<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
-                        '<p>Cuisine Type: ' + csvObjects[i]["Cuisine"] + '</p>' +
-                        '<p>Hours of Operation: ' + csvObjects[i]["Hours of Operation"] + '</p>' +
-                        '<p>Rating: ' + csvObjects[i]["Google Rating"] + '</p>' +
-                        '<p>Fully Vegetarian?: ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
-                        '<p>Phone Number: ' + csvObjects[i]["Phone Number"] + '</p>' +
-                        '<p>Price: ' + csvObjects[i]["Price"] + '</p>' +
-                        '</div>'
-                    );
-                    infowindow.open(map, marker);
-                }
-            })(marker, i)); 
-        }
-    }
 }
 
+function populateAllMarkers(data) {
+    csvObjects = $.csv.toObjects(data);
+    console.log(csvObjects);
+    var infowindow = new google.maps.InfoWindow();
+    var listView = document.getElementById('listContent');
+    var listViewText = '';
 
+    for (var i = 0; i < csvObjects.length; i++) {
+
+        var marker = new google.maps.Marker({
+            map: map,
+            position: new google.maps.LatLng(
+                csvObjects[i].Latitude,
+                csvObjects[i].Longitude
+            ),
+            title: "Current Position",
+            category: csvObjects[i].Cuisine.replace(/ /g, ''),
+        });
+
+        allMarkers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+            return function () {
+                infowindow.setContent(
+                    '<div id="content" class="container">' +
+                    '<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
+                    '<p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p>' +
+                    '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
+                    '<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
+                    '<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
+                    '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
+                    '<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
+                    '<div class="more-details">' +
+                    '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>' +
+                    '</div>' +
+                    '<div class="row">' +
+                    '<div id="details-accordion' + i + '" class="accordion">' + 
+                    '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>' +
+                    '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+                );
+                infowindow.open(map, marker);
+            }
+        })(marker, i));
+
+        listViewText += '<div class="container">';
+        listViewText += '<div class="restaurant-list">';
+        listViewText += '<h1>' + csvObjects[i]["Name of Restaurant"] + '</h1>';
+        listViewText += '<div class="row">';
+        listViewText += '<div class="col-7"><p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p></div>';
+        listViewText += '<div class="col-5 text-right"><p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p></div>';
+        listViewText += '</div>';
+        listViewText += '<div class="row">';
+        listViewText += '<div class="col-7"><p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p></div>';
+        listViewText += '<div class="col-5 text-right"><p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p></div>';
+        listViewText += '</div>';
+        listViewText += '<div class="more-details">';
+        listViewText += '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>';
+        listViewText += '</div>';
+        listViewText += '<div class="row">';
+        listViewText += '<div id="details-accordion' + i + '" class="accordion">';
+        listViewText += '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>';
+        listViewText += '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>';
+        listViewText += '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>';
+        listViewText += '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>';
+        listViewText += '</div>';
+        listViewText += '</div>';
+        listViewText += '</div>';
+        listViewText += '</div>';
+    }
+    listView.innerHTML = listViewText;
+
+    popup(csvObjects);
+}
 
 function initLocationProcedure() {
     initMap();
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            map.setCenter(pos);
-            map.setZoom(11);
-        });
+        navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
     } else {
-        // Browser doesn't support Geolocation
-        alert("no support");
+        console.log("Not supported");
     }
-
 }
