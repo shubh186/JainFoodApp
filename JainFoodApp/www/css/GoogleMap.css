@@ -64,3 +64,26 @@ html, body {
     font-size: 12px;
     text-decoration: none;
 }
+
+.list-item--material__right {
+    padding: 12px 12px 12px 0;
+}
+
+.list-item .center {
+    color: #31313a;
+    font-size: 14px;
+}
+
+:checked + .switch--material__toggle {
+    background-color: rgb(243, 157, 0);
+}
+
+:checked + .switch--material__toggle > .switch--material__handle {
+    background-color: rgb(150, 100, 8);
+}
+.popover--material__content{
+    border-radius: 6px;
+}
+.gm-style .gm-style-iw-c{
+    padding: 15px 0;
+}
