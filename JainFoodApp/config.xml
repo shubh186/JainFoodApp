@@ -11,6 +11,9 @@
   <content src="index.html" />
   <preference name="SplashScreen" value="screen" />
   <preference name="windows-target-version" value="10.0" />
+  <preference name="DisallowOverscroll" value="true" />
+  <preference name="EnableViewportScale" value="true" />
+  <preference name="Fullscreen" value="true" />
   <!-- Support for Cordova 5.0.0 plugin system -->
   <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
   <allow-intent href="http://*/*" />

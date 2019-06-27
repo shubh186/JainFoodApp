@@ -9,11 +9,11 @@ body {
     background: #d35908;
 }
 
-:checked + .tabbar--material__button {
+:checked + .tabbar--material__button, :checked + .tabbar__button {
     background-color: #ffe1cc;
     color: #d35908;
 }
-.tabbar--material__button {
+.tabbar--material__button, .tabbar__button {
     color: #ffffff;
 }
 .bottom-bar, .tabbar:not(.tabbar--top) {
@@ -32,7 +32,7 @@ body {
 .text-right{
     text-align: right;
 }
-.page--material__content h1{
+.page--material__content h1, .page__content h1 {
     font-size: 18px;
     margin: 0;
 }
@@ -66,6 +66,7 @@ body {
     display: none;
     background: #eff9ef;
     padding: 5px 15px 20px 15px;
+    width: 100%;
 }
 .accordion p{
     line-height: 1.5;

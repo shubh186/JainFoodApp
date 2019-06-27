@@ -8,8 +8,8 @@ function initMap() {
     map = new google.maps.Map(
         document.getElementById('map'),
         {
-            center: { lat: 41.84, lng: -39.08 },
-            zoom: 3,
+            center: { lat: 43.7184038, lng: -79.5181442 },
+            zoom: 9,
             disableDefaultUI: true,
             styles: [
                 {
@@ -73,7 +73,7 @@ function initMap() {
 }
 function locError(error) {
     // the current position could not be located
-    alert("The current position could not be found!");
+    console.log("The current position could not be found!");
 }
 
 function setCurrentPosition(pos) {
@@ -209,7 +209,6 @@ function getSpreadsheetData() {
 
 function populateAllMarkers(data) {
     csvObjects = $.csv.toObjects(data);
-    console.log(csvObjects);
     var infowindow = new google.maps.InfoWindow();
     var listView = document.getElementById('listContent');
     var listViewText = '';
