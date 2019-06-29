@@ -2,6 +2,13 @@
 let map, currentPositionMarker, csvObjects;
 let allMarkers = [];
 let selectedCategores = [];
+let filters = {};
+const FILTER_TYPE_CATEGORIES = 'category';
+const FILTER_TYPE_RESTAURANT_NAME = 'name';
+
+function manageFilter(filterCategory, filterValues) {
+	filters[filterCategory] = filterValues;
+}
 
 function initMap() {
     getSpreadsheetData();
@@ -149,29 +156,33 @@ function popup(restaurantsArray) {
 
     $('ons-switch').on('change', function (event) {
         if (event.target.checked) {
-            showAllMarkers(false);
-            selectedCategores.push(event.target.attributes[0].value);
-            filterByCategory(selectedCategores)
+			selectedCategores.push(event.target.attributes[0].value);         
         } else {
-            showAllMarkers(false);
             var index = selectedCategores.indexOf(event.target.attributes[0].value);
 
             if (index > -1) {
                 selectedCategores.splice(index, 1);
             }
-
-            filterByCategory(selectedCategores)
-        };
+		};
+		manageFilter(FILTER_TYPE_CATEGORIES, selectedCategores);
+		applyFilters();
+		// filterByCategory(selectedCategores);
     });
 }
 
+function applyFilters() {
+	showAllMarkers(false);
+	// now start applying each filter here
+	filterByCategory(filters[FILTER_TYPE_CATEGORIES]);
+	filterMarkersByRestaurantName(filters[FILTER_TYPE_RESTAURANT_NAME]);
+}
+
 function filterByCategory(categoryArray) {
-    if (categoryArray.length == 0) {
-        showAllMarkers(true);
-    } else {
-        for (var i = 0; i < categoryArray.length; i++) {
-            filterMarkers(categoryArray[i]);
-        }
+	if (!categoryArray) {
+		return;
+	}
+    for (var i = 0; i < categoryArray.length; i++) {
+        filterMarkers(categoryArray[i]);
     }
 }
 
@@ -190,6 +201,26 @@ function filterMarkers(category) {
             marker.setVisible(true);
         }
     }
+}
+
+function filterByRestaurantName(name) {
+	filters[FILTER_TYPE_RESTAURANT_NAME] = name;
+	applyFilters();
+}
+
+function filterMarkersByRestaurantName(name) {
+	// TODO unify all filtering so when a filter is changed, other filters applied remain applied
+	if (!name || name.length === 0) {
+		// this filter doesn't need to be applied
+		return;
+	}
+	for (var i = 0; i < allMarkers.length; i++) {
+		var marker = allMarkers[i];
+
+		if (marker.restaurantName.toLowerCase().indexOf(name.toLowerCase()) >= 0 || name.length === 0) {
+			marker.setVisible(true);
+		}
+	}
 }
 
 function getSpreadsheetData() {
@@ -223,7 +254,8 @@ function populateAllMarkers(data) {
                 csvObjects[i].Longitude
             ),
             title: "Current Position",
-            category: csvObjects[i].Cuisine.replace(/ /g, ''),
+			category: csvObjects[i].Cuisine.replace(/ /g, ''),
+			restaurantName: csvObjects[i]['Name of Restaurant']
         });
 
         allMarkers.push(marker);

@@ -24,7 +24,6 @@
         <ons-toolbar>
             <div class="center">Jain Bites</div>
         </ons-toolbar>
-
         <ons-tabbar position="bottom">
             <ons-tab page="map.html" label="Map" icon="ion-ios-location, material:md-home" active>
             </ons-tab>
@@ -41,11 +40,11 @@
     </ons-popover>
     <template id="map.html">
         <ons-page id="Map">
-            <div style="display: none">
-                <input id="pac-input"
-                       class="controls"
-                       type="text"
-                       placeholder="Enter a location">
+            <div>
+                <ons-search-input placeholder="Search"
+                                  onchange="filterByRestaurantName(this.value)"
+                                  class="search-bar">
+                </ons-search-input>
             </div>
             <div id="map"></div>
             <div id="infowindow-content">
