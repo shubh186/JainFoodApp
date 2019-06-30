@@ -89,9 +89,14 @@
     <splash src="res/screens/android/screen-xhdpi-portrait.png" density="port-xhdpi" />
   </platform>
   <platform name="ios">
-    <splash src="res/screens/ios/Default@2x~universal~anyany.png" />
-    <splash src="res/screen/ios/Default-2436h.png" width="1125" height="2436"/>
-    <splash src="res/screen/ios/Default-Landscape-2436h.png" width="2436" height="1125"/>
+    <splash src="res/screen/ios/Default@2x~iphone~anyany.png" />
+    <splash src="res/screen/ios/Default@2x~iphone~comany.png" />
+    <splash src="res/screen/ios/Default@2x~iphone~comcom.png" />
+    <splash src="res/screen/ios/Default@3x~iphone~anyany.png" />
+    <splash src="res/screen/ios/Default@3x~iphone~anycom.png" />
+    <splash src="res/screen/ios/Default@3x~iphone~comany.png" />
+    <splash src="res/screen/ios/Default@2x~ipad~anyany.png" />
+    <splash src="res/screen/ios/Default@2x~ipad~comany.png" />
   </platform>
   <platform name="windows">
     <splash src="res/screens/windows/SplashScreen.scale-100.png" width="620" height="300" />
@@ -102,4 +107,5 @@
   <access origin="https://docs.google.com" />
   <plugin name="cordova-plugin-geolocation" spec="~2.4.3" />
   <access origin="https://maps.gstatic.com" />
+  <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
 </widget>
