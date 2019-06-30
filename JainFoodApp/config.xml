@@ -90,6 +90,8 @@
   </platform>
   <platform name="ios">
     <splash src="res/screens/ios/Default@2x~universal~anyany.png" />
+    <splash src="res/screen/ios/Default-2436h.png" width="1125" height="2436"/>
+    <splash src="res/screen/ios/Default-Landscape-2436h.png" width="2436" height="1125"/>
   </platform>
   <platform name="windows">
     <splash src="res/screens/windows/SplashScreen.scale-100.png" width="620" height="300" />
