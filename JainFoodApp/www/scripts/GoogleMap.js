@@ -10,6 +10,10 @@ function manageFilter(filterCategory, filterValues) {
 	filters[filterCategory] = filterValues;
 }
 
+function getCategoryFilterArray() {
+	return filters[FILTER_TYPE_CATEGORIES];
+}
+
 function initMap() {
     getSpreadsheetData();
     map = new google.maps.Map(
@@ -172,9 +176,24 @@ function popup(restaurantsArray) {
 
 function applyFilters() {
 	showAllMarkers(false);
-	// now start applying each filter here
+	// now start applying each filter here on the Map View page
 	filterByCategory(filters[FILTER_TYPE_CATEGORIES]);
 	filterMarkersByRestaurantName(filters[FILTER_TYPE_RESTAURANT_NAME]);
+
+	// apply filters to the List View Page
+	filterListViewPage();
+}
+
+function filterListViewPage() {
+	let filteredRestaurants = csvObjects;
+	const categoryArray = getCategoryFilterArray();
+	if (categoryArray && categoryArray.length > 0) {
+		filteredRestaurants = filteredRestaurants.filter(function (restaurant) {
+			return categoryArray.includes(restaurant['Cuisine']);
+		});
+	}
+
+	showListView(filteredRestaurants);
 }
 
 function filterByCategory(categoryArray) {
@@ -242,78 +261,83 @@ function populateAllMarkers(data) {
     csvObjects = $.csv.toObjects(data);
     console.log(csvObjects);
     var infowindow = new google.maps.InfoWindow();
-    var listView = document.getElementById('listContent');
-    var listViewText = '';
 
-    for (var i = 0; i < csvObjects.length; i++) {
+	for (var i = 0; i < csvObjects.length; i++) {
 
-        var marker = new google.maps.Marker({
-            map: map,
-            position: new google.maps.LatLng(
-                csvObjects[i].Latitude,
-                csvObjects[i].Longitude
-            ),
-            title: "Current Position",
+		var marker = new google.maps.Marker({
+			map: map,
+			position: new google.maps.LatLng(
+				csvObjects[i].Latitude,
+				csvObjects[i].Longitude
+			),
+			title: "Current Position",
 			category: csvObjects[i].Cuisine.replace(/ /g, ''),
 			restaurantName: csvObjects[i]['Name of Restaurant']
-        });
+		});
 
-        allMarkers.push(marker);
+		allMarkers.push(marker);
 
-        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-            return function () {
-                infowindow.setContent(
-                    '<div id="content" class="container">' +
-                    '<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
-                    '<p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p>' +
-                    '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
-                    '<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
-                    '<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
-                    '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
-                    '<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
-                    '<div class="more-details">' +
-                    '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>' +
-                    '</div>' +
-                    '<div class="row">' +
-                    '<div id="details-accordion' + i + '" class="accordion">' + 
-                    '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>' +
-                    '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'
-                );
-                infowindow.open(map, marker);
-            }
-        })(marker, i));
-
-        listViewText += '<div class="container">';
-        listViewText += '<div class="restaurant-list">';
-        listViewText += '<h1>' + csvObjects[i]["Name of Restaurant"] + '</h1>';
-        listViewText += '<div class="row">';
-        listViewText += '<div class="col-7"><p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p></div>';
-        listViewText += '<div class="col-5 text-right"><p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p></div>';
-        listViewText += '</div>';
-        listViewText += '<div class="row">';
-        listViewText += '<div class="col-7"><p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p></div>';
-        listViewText += '<div class="col-5 text-right"><p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p></div>';
-        listViewText += '</div>';
-        listViewText += '<div class="more-details">';
-        listViewText += '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>';
-        listViewText += '</div>';
-        listViewText += '<div class="row">';
-        listViewText += '<div id="details-accordion' + i + '" class="accordion">';
-        listViewText += '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>';
-        listViewText += '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>';
-        listViewText += '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>';
-        listViewText += '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>';
-        listViewText += '</div>';
-        listViewText += '</div>';
-        listViewText += '</div>';
-        listViewText += '</div>';
-    }
-    listView.innerHTML = listViewText;
-
+		google.maps.event.addListener(marker, 'click', (function (marker, i) {
+			return function () {
+				infowindow.setContent(
+					'<div id="content" class="container">' +
+					'<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
+					'<p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p>' +
+					'<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
+					'<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
+					'<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
+					'<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
+					'<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
+					'<div class="more-details">' +
+					'<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>' +
+					'</div>' +
+					'<div class="row">' +
+					'<div id="details-accordion' + i + '" class="accordion">' +
+					'<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>' +
+					'<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>' +
+					'</div>' +
+					'</div>' +
+					'</div>'
+				);
+				infowindow.open(map, marker);
+			}
+		})(marker, i));
+	}
     popup(csvObjects);
+}
+
+function showListView(restaurants) {
+	var listView = document.getElementById('listContent');
+	var listViewText = '';
+
+	for (var i = 0; i < restaurants.length; i++) {
+
+		listViewText += '<div class="container">';
+		listViewText += '<div class="restaurant-list">';
+		listViewText += '<h1>' + restaurants[i]["Name of Restaurant"] + '</h1>';
+		listViewText += '<div class="row">';
+		listViewText += '<div class="col-7"><p><span class="green-color">Cuisine Type:</span> ' + restaurants[i]["Cuisine"] + '</p></div>';
+		listViewText += '<div class="col-5 text-right"><p><span class="green-color">Rating:</span> ' + restaurants[i]["Google Rating"] + '</p></div>';
+		listViewText += '</div>';
+		listViewText += '<div class="row">';
+		listViewText += '<div class="col-7"><p><span class="green-color">Fully Vegetarian?:</span> ' + restaurants[i]["Fully Veg/Not"] + '</p></div>';
+		listViewText += '<div class="col-5 text-right"><p><span class="green-color">Price:</span> ' + restaurants[i]["Price"] + '</p></div>';
+		listViewText += '</div>';
+		listViewText += '<div class="more-details">';
+		listViewText += '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>';
+		listViewText += '</div>';
+		listViewText += '<div class="row">';
+		listViewText += '<div id="details-accordion' + i + '" class="accordion">';
+		listViewText += '<p><span class="green-color">Hours of Operation:</span> ' + restaurants[i]["Hours of Operation"] + '</p>';
+		listViewText += '<p><span class="green-color">Phone Number:</span> ' + restaurants[i]["Phone Number"] + '</p>';
+		listViewText += '<p><span class="green-color">Menu Items:</span> ' + restaurants[i]["Menu Items"] + '</p>';
+		listViewText += '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + restaurants[i]["Notes (what to ask Chef/Waiter)"] + '</p>';
+		listViewText += '</div>';
+		listViewText += '</div>';
+		listViewText += '</div>';
+		listViewText += '</div>';
+	}
+	listView.innerHTML = listViewText;
 }
 
 function initLocationProcedure() {
