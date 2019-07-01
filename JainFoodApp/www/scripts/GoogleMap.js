@@ -4,7 +4,8 @@ let allMarkers = [];
 let selectedCategores = [];
 let filters = {};
 const FILTER_TYPE_CATEGORIES = 'category';
-const FILTER_TYPE_RESTAURANT_NAME = 'name';
+const FILTER_TYPE_RESTAURANT_NAME = 'map_view_restaurant_name';
+const FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW = 'list_view_restaurant_name';
 
 function manageFilter(filterCategory, filterValues) {
 	filters[filterCategory] = filterValues;
@@ -12,6 +13,10 @@ function manageFilter(filterCategory, filterValues) {
 
 function getCategoryFilterArray() {
 	return filters[FILTER_TYPE_CATEGORIES];
+}
+
+function getListViewSearchBarFilter() {
+	return filters[FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW];
 }
 
 function initMap() {
@@ -187,13 +192,25 @@ function applyFilters() {
 function filterListViewPage() {
 	let filteredRestaurants = csvObjects;
 	const categoryArray = getCategoryFilterArray();
+	const restaurantName = getListViewSearchBarFilter();
+
 	if (categoryArray && categoryArray.length > 0) {
 		filteredRestaurants = filteredRestaurants.filter(function (restaurant) {
-			return categoryArray.includes(restaurant['Cuisine']);
+			let canFilter = categoryArray.includes(restaurant['Cuisine']);
+			const currentName = restaurant['Name of Restaurant'];
+			if (restaurantName) {
+				canFilter = canFilter || (currentName.toLowerCase().indexOf(restaurantName.toLowerCase()) >= 0);
+			}
+			return canFilter;
 		});
 	}
-
+	
 	showListView(filteredRestaurants);
+}
+
+function filterListViewPageByRestaurantName(name) {
+	manageFilter(FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW, name);
+	filterListViewPage();
 }
 
 function filterByCategory(categoryArray) {
