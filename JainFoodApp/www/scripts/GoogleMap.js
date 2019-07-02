@@ -5,7 +5,10 @@ let selectedCategores = [];
 let filters = {};
 const FILTER_TYPE_CATEGORIES = 'category';
 const FILTER_TYPE_RESTAURANT_NAME = 'map_view_restaurant_name';
-const FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW = 'list_view_restaurant_name';
+
+// UI classes for jquery selectors
+const CLASS_MAP_VIEW_SEARCH_BAR = '.map-view-search-bar';
+const CLASS_LIST_VIEW_SEARCH_BAR = '.list-view-search-bar';
 
 function manageFilter(filterCategory, filterValues) {
 	filters[filterCategory] = filterValues;
@@ -15,8 +18,8 @@ function getCategoryFilterArray() {
 	return filters[FILTER_TYPE_CATEGORIES];
 }
 
-function getListViewSearchBarFilter() {
-	return filters[FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW];
+function getSearchBarFilter() {
+	return filters[FILTER_TYPE_RESTAURANT_NAME];
 }
 
 function initMap() {
@@ -192,25 +195,30 @@ function applyFilters() {
 function filterListViewPage() {
 	let filteredRestaurants = csvObjects;
 	const categoryArray = getCategoryFilterArray();
-	const restaurantName = getListViewSearchBarFilter();
+	const restaurantName = getSearchBarFilter();
 
-	if (categoryArray && categoryArray.length > 0) {
-		filteredRestaurants = filteredRestaurants.filter(function (restaurant) {
-			let canFilter = categoryArray.includes(restaurant['Cuisine']);
-			const currentName = restaurant['Name of Restaurant'];
-			if (restaurantName) {
-				canFilter = canFilter || (currentName.toLowerCase().indexOf(restaurantName.toLowerCase()) >= 0);
-			}
-			return canFilter;
-		});
-	}
+	filteredRestaurants = filteredRestaurants.filter(function (restaurant) {
+		let canFilter = false;
+
+		// cuisine filter
+		if (categoryArray && categoryArray.length > 0) {
+			canFilter = categoryArray.includes(restaurant['Cuisine']);
+		}
+
+		// restaurant name filter
+		const currentName = restaurant['Name of Restaurant'];
+		if (restaurantName) {
+			canFilter = canFilter || (currentName.toLowerCase().indexOf(restaurantName.toLowerCase()) >= 0);
+		}
+		return canFilter;
+	});
 	
 	showListView(filteredRestaurants);
 }
 
 function filterListViewPageByRestaurantName(name) {
-	manageFilter(FILTER_TYPE_RESTAURANT_NAME_LIST_VIEW, name);
-	filterListViewPage();
+	manageFilter(FILTER_TYPE_RESTAURANT_NAME, name);
+	applyFilters();
 }
 
 function filterByCategory(categoryArray) {
@@ -245,6 +253,10 @@ function filterByRestaurantName(name) {
 }
 
 function filterMarkersByRestaurantName(name) {
+	const mapViewSearchBar = $(CLASS_MAP_VIEW_SEARCH_BAR);
+	if (mapViewSearchBar && mapViewSearchBar.length > 0) {
+		mapViewSearchBar[0].setAttribute('value', getSearchBarFilter());
+	}
 	// TODO unify all filtering so when a filter is changed, other filters applied remain applied
 	if (!name || name.length === 0) {
 		// this filter doesn't need to be applied
@@ -324,6 +336,12 @@ function populateAllMarkers(data) {
 }
 
 function showListView(restaurants) {
+	// set the search bar
+	const searchBar = $(CLASS_LIST_VIEW_SEARCH_BAR);
+	if (searchBar.length > 0) {
+		searchBar[0].setAttribute('value', getSearchBarFilter());
+	}
+	
 	var listView = document.getElementById('listContent');
 	var listViewText = '';
 
