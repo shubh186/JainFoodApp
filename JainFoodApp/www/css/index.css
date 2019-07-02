@@ -9,8 +9,6 @@ body {
 
 .toolbar {
     background: #d35908;
-    margin-bottom: constant(safe-area-inset-bottom); /* iOS 11.0 */
-    margin-bottom: env(safe-area-inset-bottom); /* iOS 11.2 */
 }
 
 :checked + .tabbar--material__button, :checked + .tabbar__button {
@@ -22,6 +20,8 @@ body {
 }
 .bottom-bar, .tabbar:not(.tabbar--top) {
     background: #d35908;
+    margin-bottom: constant(safe-area-inset-bottom); /* iOS 11.0 */
+    margin-bottom: env(safe-area-inset-bottom); /* iOS 11.2 */
 }
 
 .tabbar__icon{
@@ -77,6 +77,18 @@ body {
 }
 .tabbar__icon + .tabbar__label{
     font-size: 12px;
+}
+.disclaimer-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 100px;
+    z-index: 99;
+    background: #ffffff;
+    padding: 5px 10px;
+    border-radius: 50%;
+}
+.ion-android-notifications {
+    color: #009000;
 }
 /*.popover-mask{
     z-index: 0;

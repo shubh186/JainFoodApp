@@ -122,7 +122,7 @@ function setMarkerPosition(marker, latitude, longitude) {
 function getCuisines(restaurantsArray) {
     var cuisineTypes = [];
     for (var i = 0; i < restaurantsArray.length; i++) {
-        if (restaurantsArray[i].Cuisine !== 'Other') {
+        if (restaurantsArray[i].Cuisine !== 'Other' || restaurantsArray[i].Cuisine !== ' ') {
             cuisineTypes.push(restaurantsArray[i].Cuisine.trim())
         }
     }
@@ -195,7 +195,7 @@ function filterMarkers(category) {
 function getSpreadsheetData() {
     $.ajax({
         type: "GET",
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSb0HkEoSOho1gBswbRzAZVqxl1oZVQe5ogMw65Pt-r5-gqJwfAGlwdB0uRzqOAae8morikFlNriObg/pub?output=csv",
         dataType: "text",
         success: function (data) {
             populateAllMarkers(data);

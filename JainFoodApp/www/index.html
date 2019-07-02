@@ -28,19 +28,23 @@
         <ons-tabbar position="bottom">
             <ons-tab page="map.html" label="Map" icon="ion-ios-location, material:md-home" active>
             </ons-tab>
-            <ons-tab onclick="showPopover(this)" label="By Cuisine" icon="ion-fork" active-icon="ion-fork">
+            <ons-tab onclick="showPopover(this, 'popover')" label="By Cuisine" icon="ion-fork" active-icon="ion-fork">
             </ons-tab>
             <ons-tab page="listView.html" label="List View" icon="ion-ios-list-outline" active-icon="ion-ios-list-outline">
-            </ons-tab>
-            <ons-tab page="aboutUs.html" label="About Us" icon="ion-information-circled" active-icon="ion-information-circled">
             </ons-tab>
         </ons-tabbar>
     </ons-page>
     <ons-popover direction="up" id="popover" cancelable>
         <div id="popoverItems"></div>
     </ons-popover>
+    <ons-popover direction="left" id="disclaimerPopup" cancelable>
+        <p style="padding: 10px">The restaurant entries included in this app are based on the experiences and knowledge of our Database team, and are not verified by the specific restaurants. It is the duty of the user to confirm whether Jain options are available at restaurants or not.</p>
+    </ons-popover>
     <template id="map.html">
         <ons-page id="Map">
+            <div class="disclaimer-icon">
+                <ons-icon size="30px" icon="ion-android-notifications" onclick="showPopover(this, 'disclaimerPopup')"></ons-icon>
+            </div>
             <div style="display: none">
                 <input id="pac-input"
                        class="controls"
@@ -58,8 +62,8 @@
         </ons-page>
     </template>
     <script>
-        var showPopover = function (target) {
-            var popup = document.getElementById('popover')
+        var showPopover = function (target, id) {
+            var popup = document.getElementById(id);
             if (popup.style.display == 'block') {
                 popup.hide();
             } else {
@@ -80,7 +84,7 @@
             var currentId = $(this).attr('id');
             console.log(currentId);
 
-                $("#" + currentId + ".accordion").slideToggle(500);
+            $("#" + currentId + ".accordion").slideToggle(500);
 
         });
     </script>
