@@ -50,7 +50,7 @@ body {
 .restaurant-list p{
     margin-bottom: 0;
 }
-.page--material, .page--material__background{
+.page--material, .page--material__background, .page, .page__background, .page__content {
     background: #ffffff;
 }
 .more-details {
@@ -59,7 +59,21 @@ body {
 }
 #content .more-details{
     padding-top: 20px;
+    padding-left: 15px;
 }
+
+.number-link {
+    color: #d35908;
+}
+
+.marker-content {
+    padding: 0 !important;
+}
+
+.marker-preview-info {
+    padding-left: 15px;
+}
+
 .more-details a {
     padding: 10px 20px;
     border: 1px solid #d35908;

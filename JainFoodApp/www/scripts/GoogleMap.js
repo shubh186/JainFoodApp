@@ -207,12 +207,16 @@ function getSpreadsheetData() {
     });
 }
 
+function callNumber(num) {
+    window.open('tel:' + num, '_system');
+}
+
 function populateAllMarkers(data) {
     csvObjects = $.csv.toObjects(data);
     var infowindow = new google.maps.InfoWindow();
     var listView = document.getElementById('listContent');
     var listViewText = '';
-
+    console.log(csvObjects);
     for (var i = 0; i < csvObjects.length; i++) {
 
         var marker = new google.maps.Marker({
@@ -230,19 +234,22 @@ function populateAllMarkers(data) {
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
                 infowindow.setContent(
-                    '<div id="content" class="container">' +
+                    '<div id="content" class="container marker-content">' +
+                    '<div class="marker-preview-info">' +
                     '<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
                     '<p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p>' +
                     '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
-                    '<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
                     '<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
-                    '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
-                    '<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
+                    '<p><span class="green-color">Address:</span> ' + csvObjects[i]["Address"] + '</p>' +
+                    '<p class="number-link" onclick="callNumber(' + csvObjects[i]["Phone Number"].replace(/[- )(]/g, '') +');"><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
+                    '</div>' +
                     '<div class="more-details">' +
                     '<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>' +
                     '</div>' +
-                    '<div class="row">' +
+                    '<div class="marker-more-details">' +
                     '<div id="details-accordion' + i + '" class="accordion">' + 
+                    '<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
+                    '<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
                     '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>' +
                     '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>' +
                     '</div>' +
@@ -256,6 +263,7 @@ function populateAllMarkers(data) {
         listViewText += '<div class="container">';
         listViewText += '<div class="restaurant-list">';
         listViewText += '<h1>' + csvObjects[i]["Name of Restaurant"] + '</h1>';
+        listViewText += '<p><span class="green-color">Address: </span>' + csvObjects[i]["Address"] + '</p>';
         listViewText += '<div class="row">';
         listViewText += '<div class="col-7"><p><span class="green-color">Cuisine Type:</span> ' + csvObjects[i]["Cuisine"] + '</p></div>';
         listViewText += '<div class="col-5 text-right"><p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p></div>';
@@ -270,7 +278,7 @@ function populateAllMarkers(data) {
         listViewText += '<div class="row">';
         listViewText += '<div id="details-accordion' + i + '" class="accordion">';
         listViewText += '<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>';
-        listViewText += '<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>';
+        listViewText += '<p class="number-link" onclick="callNumber(' + csvObjects[i]["Phone Number"].replace(/[- )(]/g, '') +');"><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>';
         listViewText += '<p><span class="green-color">Menu Items:</span> ' + csvObjects[i]["Menu Items"] + '</p>';
         listViewText += '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + csvObjects[i]["Notes (what to ask Chef/Waiter)"] + '</p>';
         listViewText += '</div>';
