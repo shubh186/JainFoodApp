@@ -108,4 +108,5 @@
   <plugin name="cordova-plugin-geolocation" spec="~2.4.3" />
   <access origin="https://maps.gstatic.com" />
   <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
+  <plugin name="cordova-plugin-inappbrowser" spec="~3.0.0" />
 </widget>

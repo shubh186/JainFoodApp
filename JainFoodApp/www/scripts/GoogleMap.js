@@ -208,7 +208,7 @@ function getSpreadsheetData() {
 }
 
 function callNumber(num) {
-    window.open('tel:' + num, '_system');
+    cordova.InAppBrowser.open('tel:' + num, '_system');
 }
 
 function populateAllMarkers(data) {
@@ -216,7 +216,7 @@ function populateAllMarkers(data) {
     var infowindow = new google.maps.InfoWindow();
     var listView = document.getElementById('listContent');
     var listViewText = '';
-    console.log(csvObjects);
+
     for (var i = 0; i < csvObjects.length; i++) {
 
         var marker = new google.maps.Marker({
