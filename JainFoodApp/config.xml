@@ -110,4 +110,6 @@
   <access origin="https://maps.gstatic.com" />
   <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
   <plugin name="cordova-plugin-inappbrowser" spec="~3.0.0" />
+  <preference name="android-minSdkVersion" value="15" />
+  <preference name="android-targetSdkVersion" value="28" />
 </widget>
