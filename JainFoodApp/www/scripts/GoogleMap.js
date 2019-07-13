@@ -22,8 +22,11 @@ function getSearchBarFilter() {
 	return filters[FILTER_TYPE_RESTAURANT_NAME];
 }
 
+function initFilters() {
+	filters[FILTER_TYPE_CATEGORIES] = [];
+	filters[FILTER_TYPE_RESTAURANT_NAME] = '';
+}
 function initMap() {
-    getSpreadsheetData();
     map = new google.maps.Map(
         document.getElementById('map'),
         {
@@ -178,7 +181,6 @@ function popup(restaurantsArray) {
 		};
 		manageFilter(FILTER_TYPE_CATEGORIES, selectedCategores);
 		applyFilters();
-		// filterByCategory(selectedCategores);
     });
 }
 
@@ -192,10 +194,18 @@ function applyFilters() {
 	filterListViewPage();
 }
 
+/**
+ * Filter List View page depending on the filter being set currently
+ *
+ */
 function filterListViewPage() {
 	let filteredRestaurants = csvObjects;
 	const categoryArray = getCategoryFilterArray();
 	const restaurantName = getSearchBarFilter();
+
+	if (!filteredRestaurants) {
+		return;
+	}
 
 	filteredRestaurants = filteredRestaurants.filter(function (restaurant) {
 		let canFilter = false;
@@ -207,7 +217,7 @@ function filterListViewPage() {
 
 		// restaurant name filter
 		const currentName = restaurant['Name of Restaurant'];
-		if (restaurantName) {
+		if (restaurantName !== '') {
 			canFilter = canFilter || (currentName.toLowerCase().indexOf(restaurantName.toLowerCase()) >= 0);
 		}
 		return canFilter;
@@ -257,9 +267,8 @@ function filterMarkersByRestaurantName(name) {
 	if (mapViewSearchBar && mapViewSearchBar.length > 0) {
 		mapViewSearchBar[0].setAttribute('value', getSearchBarFilter());
 	}
-	// TODO unify all filtering so when a filter is changed, other filters applied remain applied
 	if (!name || name.length === 0) {
-		// this filter doesn't need to be applied
+		// the search bar filter doesn't need to be applied if it's just empty
 		return;
 	}
 	for (var i = 0; i < allMarkers.length; i++) {
@@ -277,18 +286,16 @@ function getSpreadsheetData() {
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
         dataType: "text",
         success: function (data) {
-            populateAllMarkers(data);
+			initRestaurants(data);
         },
         error: function () {
-            alert("The app's full features are not available at this moment. Please ensure you are connected to the internet and try again in a few minutes.")
-            populateAllMarkers({});
+			alert("The app's full features are not available at this moment. Please ensure you are connected to the internet and try again in a few minutes.")
+			initRestaurants({});
         }
     });
 }
 
-function populateAllMarkers(data) {
-    csvObjects = $.csv.toObjects(data);
-    console.log(csvObjects);
+function populateAllMarkers() {
     var infowindow = new google.maps.InfoWindow();
 
 	for (var i = 0; i < csvObjects.length; i++) {
@@ -376,10 +383,23 @@ function showListView(restaurants) {
 }
 
 function initLocationProcedure() {
-    initMap();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
     } else {
         console.log("Not supported");
     }
+}
+
+function initRestaurants(data) {
+	csvObjects = $.csv.toObjects(data);
+	console.log(csvObjects);
+
+	populateAllMarkers();
+	showListView(csvObjects);
+}
+
+function initApp() {
+	getSpreadsheetData();
+	initFilters();
+	initMap();
 }
