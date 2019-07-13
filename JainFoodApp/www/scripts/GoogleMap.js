@@ -281,14 +281,14 @@ function isFiltersClear() {
 function setMapViewSearchBarValue(name) {
 	const mapViewSearchBar = $(CLASS_MAP_VIEW_SEARCH_BAR);
 	if (mapViewSearchBar && mapViewSearchBar.length > 0) {
-		mapViewSearchBar[0].setAttribute('value', name);
+		mapViewSearchBar[0].value = name;
 	}
 }
 
 function setListViewSearchBarValue(name) {
 	const listViewSearchBar = $(CLASS_LIST_VIEW_SEARCH_BAR);
 	if (listViewSearchBar && listViewSearchBar.length > 0) {
-		listViewSearchBar[0].setAttribute('value', name);
+		listViewSearchBar[0].value = name;
 	}
 }
 
