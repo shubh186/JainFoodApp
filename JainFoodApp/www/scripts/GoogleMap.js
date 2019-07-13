@@ -30,8 +30,8 @@ function initMap() {
     map = new google.maps.Map(
         document.getElementById('map'),
         {
-            center: { lat: 41.84, lng: -39.08 },
-            zoom: 3,
+            center: { lat: 43.7184038, lng: -79.5181442 },
+            zoom: 9,
             disableDefaultUI: true,
             styles: [
                 {
@@ -95,7 +95,7 @@ function initMap() {
 }
 function locError(error) {
     // the current position could not be located
-    alert("The current position could not be found!");
+    console.log("The current position could not be found!");
 }
 
 function setCurrentPosition(pos) {
@@ -144,7 +144,7 @@ function setMarkerPosition(marker, latitude, longitude) {
 function getCuisines(restaurantsArray) {
     var cuisineTypes = [];
     for (var i = 0; i < restaurantsArray.length; i++) {
-        if (restaurantsArray[i].Cuisine !== 'Other') {
+        if (restaurantsArray[i].Cuisine !== 'Other' || restaurantsArray[i].Cuisine !== ' ') {
             cuisineTypes.push(restaurantsArray[i].Cuisine.trim())
         }
     }
@@ -185,6 +185,11 @@ function popup(restaurantsArray) {
 }
 
 function applyFilters() {
+	if (isFiltersClear()) {
+		populateAllMarkers();
+		showListView(csvObjects);
+		return;
+	}
 	showAllMarkers(false);
 	// now start applying each filter here on the Map View page
 	filterByCategory(filters[FILTER_TYPE_CATEGORIES]);
@@ -262,6 +267,10 @@ function filterByRestaurantName(name) {
 	applyFilters();
 }
 
+function isFiltersClear() {
+	return (!getCategoryFilterArray() || getCategoryFilterArray().length === 0) && getSearchBarFilter() === '';
+}
+
 function filterMarkersByRestaurantName(name) {
 	const mapViewSearchBar = $(CLASS_MAP_VIEW_SEARCH_BAR);
 	if (mapViewSearchBar && mapViewSearchBar.length > 0) {
@@ -283,7 +292,7 @@ function filterMarkersByRestaurantName(name) {
 function getSpreadsheetData() {
     $.ajax({
         type: "GET",
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRyzukpconv_IZ6zUNC_bVM7AV-t-IdKpAEQMsYMmU_IYKf-xLp2lEc8bFNGhmE4cXR8UyoyT8A8Sx/pub?output=csv",
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSb0HkEoSOho1gBswbRzAZVqxl1oZVQe5ogMw65Pt-r5-gqJwfAGlwdB0uRzqOAae8morikFlNriObg/pub?output=csv",
         dataType: "text",
         success: function (data) {
 			initRestaurants(data);
@@ -293,6 +302,9 @@ function getSpreadsheetData() {
 			initRestaurants({});
         }
     });
+}
+function callNumber(num) {
+	cordova.InAppBrowser.open('tel:' + num, '_system');
 }
 
 function populateAllMarkers() {
@@ -312,7 +324,6 @@ function populateAllMarkers() {
 		});
 
 		allMarkers.push(marker);
-
 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
 			return function () {
 				infowindow.setContent(
@@ -357,6 +368,7 @@ function showListView(restaurants) {
 		listViewText += '<div class="container">';
 		listViewText += '<div class="restaurant-list">';
 		listViewText += '<h1>' + restaurants[i]["Name of Restaurant"] + '</h1>';
+		listViewText += '<p><span class="green-color">Address: </span>' + restaurants[i]["Address"] + '</p>';
 		listViewText += '<div class="row">';
 		listViewText += '<div class="col-7"><p><span class="green-color">Cuisine Type:</span> ' + restaurants[i]["Cuisine"] + '</p></div>';
 		listViewText += '<div class="col-5 text-right"><p><span class="green-color">Rating:</span> ' + restaurants[i]["Google Rating"] + '</p></div>';
@@ -371,7 +383,7 @@ function showListView(restaurants) {
 		listViewText += '<div class="row">';
 		listViewText += '<div id="details-accordion' + i + '" class="accordion">';
 		listViewText += '<p><span class="green-color">Hours of Operation:</span> ' + restaurants[i]["Hours of Operation"] + '</p>';
-		listViewText += '<p><span class="green-color">Phone Number:</span> ' + restaurants[i]["Phone Number"] + '</p>';
+		listViewText += '<p class="number-link" onclick="callNumber(' + restaurants[i]["Phone Number"].replace(/[- )(]/g, '') + ');"><span class="green-color">Phone Number:</span> ' + restaurants[i]["Phone Number"] + '</p>';
 		listViewText += '<p><span class="green-color">Menu Items:</span> ' + restaurants[i]["Menu Items"] + '</p>';
 		listViewText += '<p><span class="green-color">Notes (what to ask Chef/Waiter):</span> ' + restaurants[i]["Notes (what to ask Chef/Waiter)"] + '</p>';
 		listViewText += '</div>';
