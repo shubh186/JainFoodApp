@@ -44,9 +44,12 @@
             <div>
                 <ons-search-input placeholder="Search"
                                   onchange="filterByRestaurantName(this.value)"
-                                  class="search-bar map-view-search-bar"
-                >
+                                  class="search-bar map-view-search-bar">
                 </ons-search-input>
+                <button class="button--quiet"
+                        onclick="filterByRestaurantName('')">
+                    x
+                </button>
             </div>
             <div class="disclaimer-icon">
                 <ons-icon size="30px" icon="ion-android-notifications" onclick="showPopover(this, 'disclaimerPopup')"></ons-icon>

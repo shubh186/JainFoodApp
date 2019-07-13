@@ -186,8 +186,7 @@ function popup(restaurantsArray) {
 
 function applyFilters() {
 	if (isFiltersClear()) {
-		populateAllMarkers();
-		showListView(csvObjects);
+		showAllRestaurants();
 		return;
 	}
 	showAllMarkers(false);
@@ -199,6 +198,10 @@ function applyFilters() {
 	filterListViewPage();
 }
 
+function showAllRestaurants() {
+	populateAllMarkers();
+	showListView(csvObjects);
+}
 /**
  * Filter List View page depending on the filter being set currently
  *
@@ -217,7 +220,7 @@ function filterListViewPage() {
 
 		// cuisine filter
 		if (categoryArray && categoryArray.length > 0) {
-			canFilter = categoryArray.includes(restaurant['Cuisine']);
+			canFilter = categoryArray.includes(restaurant['Cuisine'].replace(/ /g, ''));
 		}
 
 		// restaurant name filter
@@ -233,6 +236,8 @@ function filterListViewPage() {
 
 function filterListViewPageByRestaurantName(name) {
 	manageFilter(FILTER_TYPE_RESTAURANT_NAME, name);
+	setMapViewSearchBarValue(name);
+	setListViewSearchBarValue(name);
 	applyFilters();
 }
 
@@ -264,6 +269,8 @@ function filterMarkers(category) {
 
 function filterByRestaurantName(name) {
 	filters[FILTER_TYPE_RESTAURANT_NAME] = name;
+	setListViewSearchBarValue(name);
+	setMapViewSearchBarValue(name);
 	applyFilters();
 }
 
@@ -271,11 +278,21 @@ function isFiltersClear() {
 	return (!getCategoryFilterArray() || getCategoryFilterArray().length === 0) && getSearchBarFilter() === '';
 }
 
-function filterMarkersByRestaurantName(name) {
+function setMapViewSearchBarValue(name) {
 	const mapViewSearchBar = $(CLASS_MAP_VIEW_SEARCH_BAR);
 	if (mapViewSearchBar && mapViewSearchBar.length > 0) {
-		mapViewSearchBar[0].setAttribute('value', getSearchBarFilter());
+		mapViewSearchBar[0].setAttribute('value', name);
 	}
+}
+
+function setListViewSearchBarValue(name) {
+	const listViewSearchBar = $(CLASS_LIST_VIEW_SEARCH_BAR);
+	if (listViewSearchBar && listViewSearchBar.length > 0) {
+		listViewSearchBar[0].setAttribute('value', name);
+	}
+}
+
+function filterMarkersByRestaurantName(name) {
 	if (!name || name.length === 0) {
 		// the search bar filter doesn't need to be applied if it's just empty
 		return;
@@ -354,12 +371,6 @@ function populateAllMarkers() {
 }
 
 function showListView(restaurants) {
-	// set the search bar
-	const searchBar = $(CLASS_LIST_VIEW_SEARCH_BAR);
-	if (searchBar.length > 0) {
-		searchBar[0].setAttribute('value', getSearchBarFilter());
-	}
-	
 	var listView = document.getElementById('listContent');
 	var listViewText = '';
 
@@ -405,9 +416,7 @@ function initLocationProcedure() {
 function initRestaurants(data) {
 	csvObjects = $.csv.toObjects(data);
 	console.log(csvObjects);
-
-	populateAllMarkers();
-	showListView(csvObjects);
+	showAllRestaurants();
 }
 
 function initApp() {
