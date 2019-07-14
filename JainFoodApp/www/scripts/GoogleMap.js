@@ -235,7 +235,8 @@ function filterListViewPage() {
 }
 
 function filterListViewPageByRestaurantName(name) {
-	manageFilter(FILTER_TYPE_RESTAURANT_NAME, name);
+    map.setZoom(9);
+    manageFilter(FILTER_TYPE_RESTAURANT_NAME, name);
 	setMapViewSearchBarValue(name);
 	setListViewSearchBarValue(name);
 	applyFilters();
@@ -268,7 +269,8 @@ function filterMarkers(category) {
 }
 
 function filterByRestaurantName(name) {
-	filters[FILTER_TYPE_RESTAURANT_NAME] = name;
+    filters[FILTER_TYPE_RESTAURANT_NAME] = name;
+    map.setZoom(9);
 	setListViewSearchBarValue(name);
 	setMapViewSearchBarValue(name);
 	applyFilters();
@@ -341,8 +343,10 @@ function populateAllMarkers() {
 		});
 
 		allMarkers.push(marker);
-		google.maps.event.addListener(marker, 'click', (function (marker, i) {
-			return function () {
+        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+            return function () {
+                $('.search-bar input').blur();
 				infowindow.setContent(
 					'<div id="content" class="container">' +
 					'<h4>' + csvObjects[i]["Name of Restaurant"] + '</h4>' +
@@ -350,7 +354,7 @@ function populateAllMarkers() {
 					'<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
 					'<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
 					'<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
-					'<p><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
+                    '<p class="number-link" onclick="callNumber(' + csvObjects[i]["Phone Number"].replace(/[- )(]/g, '') + ');"><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
 					'<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
 					'<div class="more-details">' +
 					'<a id="details-accordion' + i + '" class="accordion-btn">More Details</a>' +
@@ -363,9 +367,14 @@ function populateAllMarkers() {
 					'</div>' +
 					'</div>'
 				);
-				infowindow.open(map, marker);
+                infowindow.open(map, marker);
 			}
-		})(marker, i));
+        })(marker, i));
+
+        google.maps.event.addListener(map, "click", function (event) {
+            infowindow.close();
+            $('.search-bar input').blur();
+        });
 	}
     popup(csvObjects);
 }
@@ -406,6 +415,7 @@ function showListView(restaurants) {
 }
 
 function initLocationProcedure() {
+    initMap();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
     } else {
@@ -415,12 +425,10 @@ function initLocationProcedure() {
 
 function initRestaurants(data) {
 	csvObjects = $.csv.toObjects(data);
-	console.log(csvObjects);
 	showAllRestaurants();
 }
 
 function initApp() {
 	getSpreadsheetData();
 	initFilters();
-	initMap();
 }

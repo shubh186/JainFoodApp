@@ -5,6 +5,13 @@ body {
     margin: 0;
 }
 
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+}
+
 .toolbar {
     background: #d35908;
     padding-top: constant(safe-area-inset-top); /* iOS 11.0 */
@@ -26,6 +33,14 @@ body {
 
 .tabbar__icon{
     height: 32px;
+}
+
+.tabbar__item {
+    background: #d35908;
+}
+
+.tabbar__item.active{
+    background: #ffe1cc;
 }
 
 .center {
@@ -59,7 +74,6 @@ body {
 }
 #content .more-details{
     padding-top: 20px;
-    padding-left: 15px;
 }
 
 .number-link {
@@ -103,6 +117,40 @@ body {
 }
 .ion-android-notifications {
     color: #009000;
+}
+.flex-center{
+    display: flex;
+    justify-content: center;
+}
+.search-bar-container{
+    position: absolute;
+    top: 20px;
+    z-index: 999;
+    width: 90%;
+}
+.search-bar{
+    display: block;
+}
+    .search-bar input {
+        background-color: #fff;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        border-radius: 6px;
+        height: 48px;
+        box-shadow: 0 0 2px 0 rgba(0,0,0,.12), 0 2px 2px 0 rgba(0,0,0,.24), 0 1px 0 0 rgba(255,255,255,.06) inset;
+    }
+.button--quiet {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    height: 100%;
+    color: #1f1f21;
+    font-size: 22px;
+}
+.list-view-search{
+    position: relative;
+    top: 0;
+    padding: 20px 0 15px 0;
 }
 /*.popover-mask{
     z-index: 0;

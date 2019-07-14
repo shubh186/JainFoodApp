@@ -1,13 +1,16 @@
 ﻿<ons-page>
-    <div>
-        <ons-search-input placeholder="Search"
-                          onchange="filterListViewPageByRestaurantName(this.value)"
-                          class="search-bar list-view-search-bar">
-        </ons-search-input>
-        <button class="button--quiet"
-                onclick="filterListViewPageByRestaurantName('')">
-            x
-        </button>
+    <div class="flex-center">
+        <div class="search-bar-container list-view-search">
+            <ons-search-input placeholder="Find a Restaurant"
+                              onchange="filterListViewPageByRestaurantName(this.value)"
+                              class="search-bar list-view-search-bar">
+            </ons-search-input>
+            <button class="button--quiet"
+                    onclick="filterListViewPageByRestaurantName('')">
+                x
+            </button>
+        </div>
     </div>
-    <div id="listContent"></div>
+
+            <div id="listContent"></div>
 </ons-page>

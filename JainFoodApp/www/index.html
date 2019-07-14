@@ -41,15 +41,17 @@
     </ons-popover>
     <template id="map.html">
         <ons-page id="Map">
-            <div>
-                <ons-search-input placeholder="Search"
-                                  onchange="filterByRestaurantName(this.value)"
-                                  class="search-bar map-view-search-bar">
-                </ons-search-input>
-                <button class="button--quiet"
-                        onclick="filterByRestaurantName('')">
-                    x
-                </button>
+            <div class="flex-center">
+                <div class="search-bar-container">
+                    <ons-search-input placeholder="Find a Restaurant"
+                                      onchange="filterByRestaurantName(this.value)"
+                                      class="search-bar map-view-search-bar">
+                    </ons-search-input>
+                    <button class="button--quiet"
+                            onclick="filterByRestaurantName('')">
+                        x
+                    </button>
+                </div>
             </div>
             <div class="disclaimer-icon">
                 <ons-icon size="30px" icon="ion-android-notifications" onclick="showPopover(this, 'disclaimerPopup')"></ons-icon>
@@ -94,6 +96,12 @@
 
             $("#" + currentId + ".accordion").slideToggle(500);
 
+        });
+
+        $(document).on('keypress', function (e) {
+            if (e.which == 13) {
+                $('.search-bar input').blur();
+            }
         });
     </script>
 </body>
