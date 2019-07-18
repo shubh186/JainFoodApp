@@ -354,6 +354,7 @@ function populateAllMarkers() {
 					'<p><span class="green-color">Hours of Operation:</span> ' + csvObjects[i]["Hours of Operation"] + '</p>' +
 					'<p><span class="green-color">Rating:</span> ' + csvObjects[i]["Google Rating"] + '</p>' +
 					'<p><span class="green-color">Fully Vegetarian?:</span> ' + csvObjects[i]["Fully Veg/Not"] + '</p>' +
+                    '<p><span class="green-color">Address:</span> ' + csvObjects[i]["Address"] + '</p>' +
                     '<p class="number-link" onclick="callNumber(' + csvObjects[i]["Phone Number"].replace(/[- )(]/g, '') + ');"><span class="green-color">Phone Number:</span> ' + csvObjects[i]["Phone Number"] + '</p>' +
 					'<p><span class="green-color">Price:</span> ' + csvObjects[i]["Price"] + '</p>' +
 					'<div class="more-details">' +

@@ -152,6 +152,26 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
     top: 0;
     padding: 20px 0 15px 0;
 }
+.jain-bites-logo {
+    width: 35%;
+    margin: 0 auto;
+    display: block;
+    margin-top: -20px;
+}
+
+.about-us-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-us p {
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: center;
+    padding-top: 25px;
+}
 /*.popover-mask{
     z-index: 0;
 }*/
