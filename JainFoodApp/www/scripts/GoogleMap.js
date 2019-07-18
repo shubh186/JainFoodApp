@@ -194,6 +194,10 @@ function applyFilters() {
 	filterByCategory(filters[FILTER_TYPE_CATEGORIES]);
 	filterMarkersByRestaurantName(filters[FILTER_TYPE_RESTAURANT_NAME]);
 
+	// no results alert display
+	if (!isAnyMarkerVisible()) {
+		notifyMapViewWithNoResultsAlert();
+	}
 	// apply filters to the List View Page
 	filterListViewPage();
 }
@@ -258,6 +262,18 @@ function showAllMarkers(visibility) {
     }
 }
 
+/**
+ * Return true if there is at least one marker visible
+ */
+function isAnyMarkerVisible() {
+	for (var i = 0; i < allMarkers.length; i++) {
+		var marker = allMarkers[i];
+		if (marker.visible) {
+			return true;
+		}
+	}
+	return false;
+}
 function filterMarkers(category) {
     for (var i = 0; i < allMarkers.length; i++) {
         var marker = allMarkers[i];
@@ -383,7 +399,9 @@ function populateAllMarkers() {
 function showListView(restaurants) {
 	var listView = document.getElementById('listContent');
 	var listViewText = '';
-
+	if (restaurants.length === 0) {
+		listViewText += '<div class="container">No restaurants found.</div>';
+	}
 	for (var i = 0; i < restaurants.length; i++) {
 
 		listViewText += '<div class="container">';
@@ -432,4 +450,8 @@ function initRestaurants(data) {
 function initApp() {
 	getSpreadsheetData();
 	initFilters();
+}
+
+function notifyMapViewWithNoResultsAlert() {
+	ons.notification.alert('No restaurants found.');
 }
