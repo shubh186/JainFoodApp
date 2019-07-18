@@ -1,7 +1,29 @@
 {
-    "name": "JainFoodApp",
-    "version": "1.0.0",
-    "private": true,
-    "dependencies": {
+  "name": "JainFoodApp",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "cordova-ios": "^4.2.0",
+    "cordova-android": "5.2.1",
+    "cordova-windows": "4.4.2"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "ios",
+      "windows"
+    ],
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-geolocation": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-inappbrowser": {}
     }
+  },
+  "devDependencies": {
+    "cordova-plugin-whitelist": "1.2.2",
+    "cordova-plugin-geolocation": "~2.4.3",
+    "cordova-plugin-splashscreen": "~5.0.2",
+    "cordova-plugin-inappbrowser": "~3.0.0"
+  }
 }
