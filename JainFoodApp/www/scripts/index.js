@@ -12,7 +12,10 @@
         document.addEventListener( 'pause', onPause.bind( this ), false );
 		document.addEventListener('resume', onResume.bind(this), false);
 
-		initApp();
+        StatusBar.hide();
+        if (window.AndroidFullScreen) { window.AndroidFullScreen.showSystemUI(); window.AndroidFullScreen.immersiveMode(); }
+
+        initApp();
     };
 
     function onPause() {

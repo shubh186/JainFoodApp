@@ -13,7 +13,6 @@
   <preference name="windows-target-version" value="10.0" />
   <preference name="DisallowOverscroll" value="true" />
   <preference name="EnableViewportScale" value="true" />
-  <preference name="Fullscreen" value="true" />
   <!-- Support for Cordova 5.0.0 plugin system -->
   <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
   <allow-intent href="http://*/*" />
@@ -115,4 +114,8 @@
   <plugin name="cordova-plugin-inappbrowser" spec="~3.0.0" />
   <preference name="android-minSdkVersion" value="15" />
   <preference name="android-targetSdkVersion" value="28" />
+  <plugin name="cordova-plugin-statusbar" spec="~2.4.3" />
+  <preference name="StatusBarOverlaysWebView" value="true" />
+  <plugin name="cordova-plugin-fullscreen" />
+  <preference name="Fullscreen" value="true" />
 </widget>

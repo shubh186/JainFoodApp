@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "cordova-ios": "^4.2.0",
     "cordova-android": "5.2.1",
+    "cordova-ios": "^4.2.0",
+    "cordova-plugin-fullscreen": "^1.2.0",
     "cordova-windows": "4.4.2"
   },
   "cordova": {
