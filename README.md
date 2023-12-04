@@ -5,4 +5,7 @@
 - Our application goes beyond basic listing functionality by providing detailed insights into each restaurant. Users can access information about vegetarian and Jain options available on the menu, along with valuable notes on specific       inquiries to make with the chef. Additionally, we incorporated a feature allowing users to directly input the restaurant's location into Google Maps with a simple click, streamlining the navigation process and have also provided an       option for the user to notify us of a restaurant that is currently not within our database, via a user input google form. 
 - Since its launch, the application has gained significant traction, currently holding over 700 downloads between the Google Play Store and App Store.
 ********************************************************************************
-- Master branch contains the code.
+
+Link to download: 
+- https://play.google.com/store/apps/details?id=io.cordova.myappf246f8&hl=en_CA&pli=1
+- https://apps.apple.com/ca/app/jain-bites/id1471277875
